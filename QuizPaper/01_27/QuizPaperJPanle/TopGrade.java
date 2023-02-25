@@ -1,6 +1,5 @@
 package QuizPaperJPanle;
 
-
 import java.io.Serializable;
 
 public class TopGrade implements Serializable {
@@ -65,4 +64,3 @@ public class TopGrade implements Serializable {
 	}
 
 }
-

@@ -93,7 +93,7 @@ public class WrongCheck extends JFrame {
 		idx=0;
 		ImageIcon logout = new ImageIcon("img\\logout1.png");
 		lblLogout = new JLabel(logout);
-		taQuiz = new JTextArea(10, 50);
+		taQuiz = new JTextArea(10, 60);
 		taQuiz.setEditable(false);
 		
 		lblMyAnswer = new JLabel("내가 선택한 정답: "+myanswer);
@@ -104,7 +104,7 @@ public class WrongCheck extends JFrame {
 		lblRight = new JLabel(right);
 		ImageIcon explanation = new ImageIcon("img\\해석 보기.png");
 		lblExplanation = new JLabel(explanation);
-		lblExplanation.setPreferredSize(new Dimension(105, 50));
+		lblExplanation.setPreferredSize(new Dimension(105, 60));
 
 		tfNum = new JTextField("원하시는 번호를 입력해주세요", 16);
 		ImageIcon icon = new ImageIcon("img\\go.png");
@@ -113,7 +113,7 @@ public class WrongCheck extends JFrame {
 		ImageIcon go = new ImageIcon(img);
 		lblGo = new JLabel(go);
 		lblGo.setPreferredSize(new Dimension(50, 50));
-		taExplanation = new JTextArea(10, 60);
+		taExplanation = new JTextArea(5, 70);
 		taExplanation.setEditable(false);
 		pnlExplanation = new JPanel();
 		JScrollPane scroll = new JScrollPane(taExplanation);
@@ -125,7 +125,7 @@ public class WrongCheck extends JFrame {
 		
 		
 		pnlPro=new JPanel(new BorderLayout());
-		pnlPro.setMaximumSize(new Dimension(300,600));	
+		pnlPro.setMaximumSize(new Dimension(500,400));	
 		pnlPro.setBackground(Color.WHITE);	
 
 		JPanel pnlTop = new JPanel(new BorderLayout());
@@ -142,8 +142,9 @@ public class WrongCheck extends JFrame {
 		pnlTop.add(pnlTitle1, BorderLayout.NORTH);
 	
 		JScrollPane sc=new JScrollPane(pnlPro);
-		sc.setPreferredSize(new Dimension(300,400));
+		sc.setPreferredSize(new Dimension(800,400));
 		sc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		sc.getVerticalScrollBar().setUnitIncrement(30);	
 		pnlTop.add(sc, BorderLayout.CENTER);
 		pnlTop.add(pnlA, BorderLayout.SOUTH);
 		
@@ -233,12 +234,14 @@ public class WrongCheck extends JFrame {
 				} else if (flag && me.getSource() == lblExplanation) {
 					pnlS.add(pnlExplanation, BorderLayout.SOUTH);
 					pnlS.updateUI();
-					setSize(900, 978);
+//					setSize(900, 1000);
+					pack();
 					flag = false;
 				} else if (!flag && me.getSource() == lblExplanation) {
 					pnlS.removeAll();
 					pnlS.updateUI();
-					setSize(900, 800);
+//					setSize(900, 830);
+					pack();
 					flag = true;
 				} else if (me.getSource() == tfNum) {
 					tfNum.setText("");
@@ -305,7 +308,8 @@ public class WrongCheck extends JFrame {
 
 	private void showFrame() {
 		setTitle("오답확인");
-		setSize(900, 800);
+//		setSize(900, 830);
+		pack();
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setResizable(false);

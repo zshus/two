@@ -70,7 +70,6 @@ public class TestResult extends JFrame {
 		this.testPaper = testPaper;
 		this.p = p;
 		this.login = login;
-
 		getData();
 		getCorrectAnswers();
 		sortDidExam();
@@ -229,6 +228,7 @@ public class TestResult extends JFrame {
 					new QuizFile(p, login);
 					dispose();
 				} else if (me.getSource() == lblReTest) {
+					login.savedidExamInfo(didExam);
 					oldNum = 0;
 					subNums = null;
 					getReset();
@@ -240,7 +240,7 @@ public class TestResult extends JFrame {
 					dispose();
 				} else {
 
-					for (int i = 0; i < quizSolve.length; i++) {
+					for (int i = 0; i < quizSolve.length; i++) {						
 						if (me.getSource() == quizSolve[i]) {
 							new QuizSolve(TestResult.this, p, getDidsubjectSolv(i));
 							quizSolve[i].setBorder(new LineBorder(Color.WHITE));
@@ -252,7 +252,6 @@ public class TestResult extends JFrame {
 						if (me.getSource() == checkWrong[i]) {
 							if (getWrongItems(i).size() > 0) {
 								ansidx=i;
-//								System.out.println(Arrays.toString(quizAnswerList.get(i))+", "+i);///////////////////////////////////////////
 								new WrongCheck(getWrongItems(i), TestResult.this, p, getDidsubjectSolv(i));
 								checkWrong[i].setBorder(new LineBorder(Color.WHITE));
 								dispose();
@@ -349,9 +348,6 @@ public class TestResult extends JFrame {
 
 	}
 
-//	private String getDidsubjectSolv(int num) {
-//		return testPaper.getSelectedList().get(num);
-//	}
 	private String getDidsubjectSolv(int num) {		
 		didExam.getSelsetedList().sort((o1,o2) -> o1.compareTo(o2));		
 		return didExam.getSelsetedList().get(num);
@@ -395,8 +391,8 @@ public class TestResult extends JFrame {
 	}
 
 	private void sortDidExam() {
-		Vector<DidSubject> didSubList = didExam.getSubjectList();
-		didSubList.sort((DidSubject o1, DidSubject o2) -> o1.getSubName().compareTo(o2.getSubName()));
+		Vector<DidSubject> didSubList = didExam.getSubjectList();		
+		didSubList.sort((o1,o2) -> o1.getSubName().compareTo(o2.getSubName()));
 	}
 
 	private void getSubjectName() {

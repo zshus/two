@@ -137,7 +137,7 @@ public class WrongCheck extends JFrame {
 		JScrollPane sc= new JScrollPane(tpTestPaper);
 		sc.setPreferredSize(new Dimension(800,300));
 		sc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		
+//		sc.getVerticalScrollBar().setUnitIncrement(30);
 
 		JPanel pnlTop = new JPanel(new BorderLayout());
 		JPanel pnlTitle1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -194,7 +194,7 @@ public class WrongCheck extends JFrame {
 		add(pnlMain, BorderLayout.CENTER);
 
 	}
-JPanel pnlS;
+	private JPanel pnlS;
 	private void addListeners() {
 		MouseListener ml = new MouseAdapter() {
 			@Override
@@ -272,6 +272,9 @@ JPanel pnlS;
 							JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
 						if (testResult == null) {
+							if(quziFile.getLogin().getdidExamInfo()!=null&&quziFile.getLogin().getdidExamInfo().size()!=0) {
+								quziFile.getLogin().saveDidExam();
+							}
 							quziFile.getLogin().setVisible(true);
 							dispose();
 						} else {

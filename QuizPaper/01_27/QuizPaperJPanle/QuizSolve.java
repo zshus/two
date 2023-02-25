@@ -99,13 +99,11 @@ public class QuizSolve extends JFrame {
 		
 		pnlPro=new JPanel(new BorderLayout());
 		pnlPro.setMaximumSize(new Dimension(500,600));
-		pnlPro.setBackground(Color.WHITE);	
-		
+		pnlPro.setBackground(Color.WHITE);			
 	
 		JPanel pnlTop = new JPanel(new BorderLayout());
 		JPanel pnlTitle1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pnlTitle1.add(new JLabel("문제"));
-
 
 		JPanel pnlAnswer = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pnlAnswer.add(lblAnswer);
@@ -113,7 +111,8 @@ public class QuizSolve extends JFrame {
 		
 		JScrollPane sc=new JScrollPane(pnlPro);
 		sc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		sc.setPreferredSize(new Dimension(300,400));
+		sc.setPreferredSize(new Dimension(800,400));
+		sc.getVerticalScrollBar().setUnitIncrement(30);	
 		pnlTop.add(sc, BorderLayout.CENTER);
 
 		pnlTop.add(pnlAnswer, BorderLayout.SOUTH);

@@ -229,6 +229,7 @@ public class TestResult extends JFrame {
 					new QuizFile(p, login);
 					dispose();
 				} else if (me.getSource() == lblReTest) {
+					login.savedidExamInfo(didExam);
 					oldNum = 0;
 					subNums = null;
 					getReset();

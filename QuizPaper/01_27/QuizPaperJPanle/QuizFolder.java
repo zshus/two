@@ -88,7 +88,7 @@ public class QuizFolder extends JFrame {
 	}
 
 	private void getFolder() {
-		JFileChooser ch = new JFileChooser("C:\\Users\\82106\\Desktop\\test");
+		JFileChooser ch = new JFileChooser("D:\\test");
 		dispose();
 		ch.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		ch.setApproveButtonText("선택");

@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Comparator;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -64,7 +65,12 @@ public class RankResult extends JFrame {
 
 	private void init() {
 		topList = gradeCheck.getTopList();
-		topList.sort((o1, o2) -> Double.valueOf(o2.getTotalScore()).compareTo(o1.getTotalScore()));
+//		topList.sort((o1, o2) -> Double.valueOf(o2.getTotalScore()).compareTo(o1.getTotalScore()));
+		topList.sort((o1, o2)-> {
+			int num = Double.valueOf(o2.getTotalScore()).compareTo(o1.getTotalScore());
+			num = num == 0 ? o1.getSpendedTime().compareTo(o2.getSpendedTime()) : num;				
+			return num;
+		});
 		if (topList.size() > 5) {
 			len = 5;
 		} else {
@@ -110,12 +116,12 @@ public class RankResult extends JFrame {
 			imgCalendar[i] = new JLabel(getIcon("img\\date.png", 50, 50));
 			pnlRank.add(imgCalendar[i]);
 
-			testDate[i] = new JLabel(topList.get(i).getDay()); // 날짜
+			testDate[i] = new JLabel(topList.get(i).getDay());
 			testDate[i].setFont(lblFont);
 			testDate[i].setPreferredSize(new Dimension(200, 50));
 			pnlRank.add(testDate[i]);
 
-			totalScore[i] = new JLabel("총점: " + topList.get(i).getTotalScore()); // 총점
+			totalScore[i] = new JLabel("총점: " + topList.get(i).getTotalScore());
 			totalScore[i].setFont(lblFont);
 			totalScore[i].setPreferredSize(new Dimension(150, 50));
 			pnlRank.add(totalScore[i]);
@@ -165,6 +171,7 @@ public class RankResult extends JFrame {
 	private void showFrame() {
 		setTitle("능력자순위");
 		pack();
+		setResizable(false);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);

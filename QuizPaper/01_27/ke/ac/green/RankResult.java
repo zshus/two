@@ -64,7 +64,11 @@ public class RankResult extends JFrame {
 
 	private void init() {
 		topList = gradeCheck.getTopList();
-		topList.sort((o1, o2) -> Double.valueOf(o2.getTotalScore()).compareTo(o1.getTotalScore()));
+		topList.sort((o1, o2)-> {
+			int num = Double.valueOf(o2.getTotalScore()).compareTo(o1.getTotalScore());
+			num = num == 0 ? o1.getSpendedTime().compareTo(o2.getSpendedTime()) : num;				
+			return num;
+		});
 		if (topList.size() > 5) {
 			len = 5;
 		} else {

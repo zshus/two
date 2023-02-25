@@ -109,7 +109,6 @@ public class Login extends JFrame {
 		JLabel lblImgTitle = new JLabel(imgTitle);
 		lblImgTitle.setOpaque(true);
 		lblImgTitle.setBackground(Color.WHITE);
-//		pnlNorth.add(lblTitle, BorderLayout.NORTH);
 		pnlNorth.add(lblImgTitle, BorderLayout.CENTER);
 
 		
@@ -216,7 +215,7 @@ public class Login extends JFrame {
 	private void showFrame() {
 		setTitle("로그인");
 		setSize(500, 475);
-//		setResizable(false);
+		setResizable(false);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setVisible(true);

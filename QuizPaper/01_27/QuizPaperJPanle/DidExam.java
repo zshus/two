@@ -116,15 +116,11 @@ public class DidExam implements Serializable {
 
 
 
-	
-
-
 	@Override
 	public String toString() {
-		return "DidExam [path=" + path + ", testName=" + testName + ", subjectList=" + subjectList + ", testTime="
-				+ testTime + ", testDay=" + testDay + ", selsetedList=" + selsetedList + "]";
+		return "DidExam [testName=" + testName + ", subjectList=" + subjectList + ", testTime=" + testTime
+				+ ", testDay=" + testDay + "]";
 	}
-
 
 
 	public static void main(String[] args) {

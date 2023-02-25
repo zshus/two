@@ -6,7 +6,6 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
@@ -16,21 +15,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.ByteArrayInputStream;
+import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -89,12 +88,15 @@ public class TestPaper extends JFrame {
 	private Vector<Integer> worngTestItems;
 	private String subScore;
 	
+	private JLabel lblDef; 
+	private JLabel lblPlus1;
+	private JLabel lblPlus2;
+	public static final int DEF = 100;
+	public static final int PLUS1 = 150;
+	public static final int PLUS2 = 200;
 	private Properties pro;
-	private int wordSize;
-	
-	private JButton btnSmall;
-	private JButton btnMiddle;
-	private JButton btnLarge;
+	private String[] fontSizes = {"100%","150%","200%"};
+	private int currentFont = DEF;
 
 	public TestPaper(File p, Login login, List<String> selectedList) {
 		this.p = p;
@@ -104,7 +106,6 @@ public class TestPaper extends JFrame {
 		quizListAll = new Vector<Vector<Quiz>>();
 		getTestTime();
 		path = selectedList.get(0);
-		
 		load();
 		init();
 		setDisplay();
@@ -113,30 +114,25 @@ public class TestPaper extends JFrame {
 
 	}
 	
-
-	
-	private void loadPro(String s) {
-		FileInputStream fis=null;		
+	private void loadFontPack(int size) {
+		FileReader fr = null;		
 		try {
-			fis=new FileInputStream(s+".properties");
-			
-			pro.load(fis);
-			fis.close();			 
-		} catch (FileNotFoundException e) {			
+			fr = new FileReader(size+ "%.properties");
+			pro = new Properties();
+			pro.load(fr);
+		}catch(IOException e) {
 			e.printStackTrace();
-		}catch (IOException e) {			
-			e.printStackTrace();
+		}finally {
+			if(fr != null) {
+				try {
+					fr.close();
+				}catch(IOException e) {}
+			}
 		}
 	}
-	
-	
-	
 
 	private void init() {
-		pro=new Properties();
-		wordSize=1;
-		loadPro("100");
-//		savePro();
+		loadFontPack(currentFont);
 		worngTestItems = new Vector<Integer>();
 		item = new Vector<HashMap<JLabel, Integer>>();
 		timer = new TestTime(this, testTime);
@@ -172,9 +168,15 @@ public class TestPaper extends JFrame {
 		for (String s : selectedList) {
 			list.add(s);
 		}
-		didExamName.setSelsetedList(list);
+		didExamName.setSelsetedList(list);		
+		lblDef = getLabel(lblDef,"100%");		
+		lblPlus1 = getLabel(lblPlus1,"150%");
+		lblPlus2 = getLabel(lblPlus2,"200%");
+		setFontColor();
 
 	}
+	
+		
 
 	private void setDisplay() {
 		JPanel pnlNorth = new JPanel(new GridLayout(0, 5));
@@ -218,22 +220,20 @@ public class TestPaper extends JFrame {
 		pnlRight.setBorder(new LineBorder(Color.DARK_GRAY));
 		pnlMain.add(pnlRight, BorderLayout.EAST);
 		setCenter();
-		
-		JPanel pnlN=new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lblLogout = new JLabel(new ImageIcon("img\\logout1.png"), JLabel.LEFT);
-		lblLogout.setBorder(new EmptyBorder(5, 8, 8, 5));
+		lblLogout.setBorder(new EmptyBorder(5, 8, 8, 5));		
 		
-		btnSmall=new JButton("100%");
-		btnMiddle=new JButton("150%");
-		btnLarge=new JButton("200%");
+		JPanel pnlTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		pnlTop.add(lblLogout);
+		pnlTop.add(lblDef);
+		pnlTop.add(new JLabel("|"));
+		pnlTop.add(lblPlus1);
+		pnlTop.add(new JLabel("|"));
+		pnlTop.add(lblPlus2);		
+		add(pnlTop, BorderLayout.NORTH);
 		
-		pnlN.add(lblLogout);
-		pnlN.add(new JLabel("      "));
-		pnlN.add(btnSmall);
-		pnlN.add(btnMiddle);
-		pnlN.add(btnLarge);
 		
-		add(pnlN, BorderLayout.NORTH);
+		
 		add(pnlMain, BorderLayout.CENTER);
 		add(new JLabel("   "), BorderLayout.SOUTH);
 		add(new JLabel("   "), BorderLayout.WEST);
@@ -253,16 +253,7 @@ public class TestPaper extends JFrame {
 					logout();
 				} else if (e.getSource() == timeStop) {
 					timer.getTimeStopOrStart();
-				} else if(e.getSource()==btnSmall){
-					loadPro("100");
-					setQuestion(currentStr);
-				}else if(e.getSource()==btnMiddle){
-					loadPro("150");
-					setQuestion(currentStr);
-				}else if(e.getSource()==btnLarge){ 
-					loadPro("200");
-					setQuestion(currentStr);
-				}else if (e.getSource() == sbumit) {
+				} else if (e.getSource() == sbumit) {
 					quizAnswerList.set(subjectIdx, quizAnswer);
 					didSubjts.get(subjectIdx).setAnswers(quizAnswer);
 					int count = 0;
@@ -307,7 +298,22 @@ public class TestPaper extends JFrame {
 							setArrow(num);
 						}
 					}
-				} else {
+				}else if(e.getSource()==lblPlus1){
+					currentFont = PLUS1;
+					loadFontPack(currentFont);
+					setFontColor();
+					setQuestion(currentStr);
+				}else if(e.getSource()==lblPlus2){
+					currentFont = PLUS2;
+					loadFontPack(currentFont);
+					setFontColor();
+					setQuestion(currentStr);
+				}else if(e.getSource()==lblDef) {
+					currentFont = DEF;
+					loadFontPack(currentFont);
+					setFontColor();
+					setQuestion(currentStr);
+				}else {
 					if (!timer.getTimer().isRunning()) {
 						showTimeMsg();
 					} else {
@@ -329,7 +335,8 @@ public class TestPaper extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				if (e.getSource() == testTimeCheck || e.getSource() == timeStop || e.getSource() == sbumit||
-						e.getSource() == lblLeft || e.getSource() == lblRight|| e.getSource() == lblLogout) {
+						e.getSource() == lblLeft || e.getSource() == lblRight|| e.getSource() == lblLogout||
+						e.getSource() == lblDef || e.getSource() == lblPlus1|| e.getSource() == lblPlus2) {
 					setCursor(new Cursor(Cursor.HAND_CURSOR));
 				}
 
@@ -338,7 +345,8 @@ public class TestPaper extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if (e.getSource() == testTimeCheck || e.getSource() == timeStop || e.getSource() == sbumit||
-						e.getSource() == lblLeft || e.getSource() == lblRight|| e.getSource() == lblLogout) {
+						e.getSource() == lblLeft || e.getSource() == lblRight|| e.getSource() == lblLogout||
+						e.getSource() == lblDef || e.getSource() == lblPlus1|| e.getSource() == lblPlus2) {
 					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				}
 
@@ -356,9 +364,10 @@ public class TestPaper extends JFrame {
 		lblLeft.addMouseListener(ml);
 		lblRight.addMouseListener(ml);
 		lblLogout.addMouseListener(ml);
-		btnSmall.addMouseListener(ml);
-		btnMiddle.addMouseListener(ml);
-		btnLarge.addMouseListener(ml);
+		
+		lblPlus1.addMouseListener(ml);
+		lblPlus2.addMouseListener(ml);
+		lblDef.addMouseListener(ml);
 
 		for (int i = 0; i < lblSubject.length; i++) {
 			lblSubject[i].addMouseListener(new MouseAdapter() {
@@ -419,7 +428,7 @@ public class TestPaper extends JFrame {
 	}
 
 	private void showFrame() {
-		setQuestion("1");
+
 		setSize(900,700);
 		setTitle("문제풀기");
 		setLocationRelativeTo(null);
@@ -542,8 +551,7 @@ public class TestPaper extends JFrame {
 		
 		JScrollPane sc=new JScrollPane(pnlPro);
 		sc.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
-		
+		sc.getVerticalScrollBar().setUnitIncrement(30);		
 		pnlCenter.add(sc);
 		
 		
@@ -614,15 +622,6 @@ public class TestPaper extends JFrame {
 	}
 
 	private void setQuestion(String s) {
-		if(pro.get("wordSize")!=null) {
-			double size=1.0;
-			String str=(String)pro.get("wordSize");
-			size=13*(Integer.parseInt(str)/100.0);
-			wordSize=(int)size;
-		}else {
-			wordSize=13;
-		}
-
 		pnlPro.removeAll();
 		Quiz quiz = quizList.get(Integer.parseInt(s) - 1);		
 		String quizTitle = quiz.getQuizTitle();
@@ -630,7 +629,7 @@ public class TestPaper extends JFrame {
 		byte[][] fpImg=quiz.getFpImg();
 		String[] fpImgInfo=quiz.getFpImgInfo();
 		JTextArea ta= new JTextArea(s+". "+quizTitle+"\n"+passage);
-		ta.setFont(new Font("맑은 고딕",Font.PLAIN,wordSize));
+		ta.setFont(new Font("맑은 고딕", Font.PLAIN,Integer.parseInt(pro.getProperty("TestPaper.size"))));
 		ta.setEditable(false);
 		ta.setLineWrap(true);
 		pnlPro.add(ta,BorderLayout.NORTH);
@@ -645,26 +644,23 @@ public class TestPaper extends JFrame {
 				JPanel pnlC=new JPanel(new BorderLayout());
 				pnlC.setBackground(Color.WHITE);
 				if(fpImg[i]!=null&&fpImg[i].length!=0) {
-					JLabel lblpro3=getImgLabel("question",i, fpImg[i]);					
-						lblpro3.setToolTipText("이미지를 클릭하시면 확대할 수 있습니다!");
-						int n=i;
-						lblpro3.addMouseListener(new MouseAdapter() {
-							@Override
-							public void mousePressed(MouseEvent e) {
-								getBingImg("question",n);
-							}
-						});
-						
-					
+					JLabel lblpro3=getImgLabel("question",i, fpImg[i]);
+					lblpro3.setToolTipText("이미지를 클릭하시면 확대할 수 있습니다!");
+					int n=i;
+					lblpro3.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mousePressed(MouseEvent e) {
+							getBingImg("question",n);
+						}
+					});
 					pnlC.add(lblpro3,BorderLayout.CENTER);
 					flag=true;
-					
 				}				
 				
 				if(fpImgInfo!=null|| fpImgInfo.length!=0) {
 					if(fpImgInfo[i]!=null) {
 						JTextArea ta4= new JTextArea(fpImgInfo[i]);
-						ta4.setFont(new Font("맑은 고딕",Font.PLAIN,wordSize));
+						ta4.setFont(new Font("맑은 고딕", Font.PLAIN,Integer.parseInt(pro.getProperty("TestPaper.size"))));
 						ta4.setEditable(false);
 						ta4.setLineWrap(true);
 						pnlC.add(ta4,BorderLayout.SOUTH);
@@ -673,10 +669,9 @@ public class TestPaper extends JFrame {
 				pnlCC.add(pnlC);
 			}
 			pnlPro.add(pnlCC,BorderLayout.CENTER);
-		}
-
-		pnlCC.add(new JLabel("\n\n"));
+		}	
 		
+		pnlCC.add(new JLabel("\n\n"));	
 		
 		JPanel pnlSS=new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pnlSS.setBackground(Color.WHITE);
@@ -694,24 +689,20 @@ public class TestPaper extends JFrame {
 				
 				String option = options[i];			
 				JLabel lblpro5=new JLabel(i+1+". "+options[i],JLabel.LEFT);
-				lblpro5.setFont(new Font("맑은 고딕",Font.PLAIN,wordSize));
+				lblpro5.setFont(new Font("맑은 고딕", Font.BOLD,Integer.parseInt(pro.getProperty("TestPaper.size"))));
 				pnlS.add(lblpro5);	
 				if(exampleImg!=null||exampleImg.length!=0) {	
 						if(exampleImg[i]!=null&&exampleImg[i].length!=0) {							
 							JLabel lblpro6=getImgLabel("answer",i, exampleImg[i]);
-							
-								lblpro6.setToolTipText("이미지를 클릭하시면 확대할 수 있습니다!");
-								int n=i;
-								lblpro6.addMouseListener(new MouseAdapter() {
-									@Override
-									public void mousePressed(MouseEvent e) {
-										getBingImg("answer",n);
-									}
-								});
-								
-							
+							lblpro6.setToolTipText("이미지를 클릭하시면 확대할 수 있습니다!");
+							int n=i;
+							lblpro6.addMouseListener(new MouseAdapter() {
+								@Override
+								public void mousePressed(MouseEvent e) {
+									getBingImg("answer",n);
+								}
+							});
 							pnlS.add(lblpro6);
-							
 						}						
 					}
 				pnlTwo.add(pnlS);
@@ -733,7 +724,7 @@ public class TestPaper extends JFrame {
 			pnlPro.setMaximumSize(new Dimension(500,600));
 			pnlPro.add(l,BorderLayout.SOUTH);
 		}
-		
+				
 		pnlPro.updateUI();	
 		
 	}
@@ -751,8 +742,9 @@ public class TestPaper extends JFrame {
 			fos.flush();
 			fos.close();
 			ImageIcon ic= new ImageIcon(titleString+Integer.parseInt(currentStr)+s+n+".png");
+			double temp=Integer.parseInt(pro.getProperty("TestPaper.imgw"))/100.0;
 			Image imG=Toolkit.getDefaultToolkit().
-					getImage(titleString+Integer.parseInt(currentStr)+s+n+".png").getScaledInstance((int)(ic.getIconWidth()*0.8*Integer.parseInt((String)pro.get("wordSize"))/100.0), (int)(ic.getIconHeight()*0.8*Integer.parseInt((String)pro.get("wordSize"))/100.0), Image.SCALE_SMOOTH);			
+					getImage(titleString+Integer.parseInt(currentStr)+s+n+".png").getScaledInstance((int)(ic.getIconWidth()*0.8*temp), (int)(ic.getIconHeight()*0.8*temp), Image.SCALE_SMOOTH);			
 			lbl=new JLabel(new ImageIcon(imG),JLabel.LEFT);			
 			
 		} catch (FileNotFoundException e) {
@@ -832,27 +824,28 @@ public class TestPaper extends JFrame {
 	public boolean getTheTimeStatus() {
 		return timer.getTimerStatus();
 	}
-	
-	private void savePro() {
-		
-		String[] arr= {"100","150","200"};
-		for(String s: arr) {
-			pro.setProperty("wordSize", s);
-			
-			FileOutputStream fos=null;			
-			try {
-				fos=new FileOutputStream(s+".properties");				
-				pro.store(fos, s);
-				fos.close();
-			} catch (FileNotFoundException e) {				
-				e.printStackTrace();
-			}catch (IOException e) {
-				
-				e.printStackTrace();
-			}
-		}			
+	private JLabel getLabel(JLabel lbl, String str) {
+		lbl = new JLabel();
+		Image image = new ImageIcon("img\\sizeChange.png").getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(image);
+		lbl.setIcon(icon);
+		lbl.setText(str);
+		lbl.setHorizontalTextPosition(JLabel.RIGHT);
+		lbl.setVerticalTextPosition(JLabel.CENTER);
+		return lbl;
 	}
 	
-	
+	private void setFontColor() {
+		lblPlus1.setForeground(Color.GRAY);
+		lblPlus2.setForeground(Color.GRAY);
+		lblDef.setForeground(Color.GRAY);
+		if(currentFont ==DEF) {
+			lblDef.setForeground(Color.blue);			
+		}else if(currentFont ==PLUS1) {
+			lblPlus1.setForeground(Color.blue);
+		}else if(currentFont ==PLUS2) {
+			lblPlus2.setForeground(Color.blue);
+		}	
+	}
 
 }

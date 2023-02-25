@@ -83,7 +83,7 @@ public class QuizAnswer implements Serializable {
 
 	@Override
 	public String toString() {
-		return "QuizAnswer [num=" + num + ", answer=" + answer + ", options=" + options
+		return "QuizAnswer [num=" + num + ", answer=" + answer + ", options=" + Arrays.toString(options)
 				+ ", itemSelected=" + itemSelected + "]";
 	}
 

@@ -52,6 +52,7 @@ public class QuizFile extends JFrame {
 	private QuizFolder quizFolder;
 	private Vector<String> vecsubs;
 	private QuizAnswer[] quizAnswerArr;
+	private Vector<DidExam> didExamInfo;
 
 	public QuizFile(File path, Login login) {
 		this.path = path;
@@ -179,7 +180,7 @@ public class QuizFile extends JFrame {
 	private void showFrame() {
 		pack();
 		setResizable(false);
-		setTitle("QuziFile");
+		setTitle("QuizFile");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -242,12 +243,23 @@ public class QuizFile extends JFrame {
 		}
 	}
 
+	
 	private void showGradCheck() {
-		new GradeCheck(path, login);
-		dispose();
+		didExamInfo=getCurrentExams();		
+		if(didExamInfo==null|| didExamInfo.size()==0||TestResult.oldNum!=0) {
+			JOptionPane.showConfirmDialog(this, "시험 진행하시고 성적 조회하세요!", "알림", JOptionPane.DEFAULT_OPTION);
+		}else {
+			new GradeCheck(path, login);
+			dispose();
+		}
+		
 	}
 
 	private void showWrongCheck() {
+		if(TestResult.oldNum!=0) {
+			JOptionPane.showConfirmDialog(this, "진행하시고 있는 시험이 있습니다! 시험 끝내시고 오답 확인하세요!", "알림", JOptionPane.DEFAULT_OPTION);
+			return;
+		}
 		if (getSelectedDidSub(subs.getSelectedIndex())==null||((String)comBox.getSelectedItem()).equals("-시험 선택-")) {
 			JOptionPane.showMessageDialog(QuizFile.this, "오답 확인할 날짜을 선택하세요!");				
 		} else {
@@ -342,6 +354,17 @@ public class QuizFile extends JFrame {
 	}
 	public QuizAnswer[] getQuizAnswerList() {
 		return quizAnswerArr;
+	}
+	
+	private Vector<DidExam> getCurrentExams() {
+		String currenName = path.getName();
+		Vector<DidExam> vec = new Vector<DidExam>();
+		for (DidExam e : login.getdidExamInfo()) {
+			if (e.getTestName().equals(currenName)) {
+				vec.add(e);
+			}
+		}
+		return vec;
 	}
 
 }

@@ -51,7 +51,7 @@ public class IdPwAnswer extends JDialog {
 			@Override
 			public void windowClosing(WindowEvent we) {
 				owner.show_login();
-				dispose();
+				dispose();  
 			}
 		});
 

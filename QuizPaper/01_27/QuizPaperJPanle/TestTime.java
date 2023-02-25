@@ -104,7 +104,7 @@ public class TestTime extends JFrame {
 
 	private void showFrame() {
 		setTitle("시간확인");
-		pack();
+		pack();		
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setResizable(false);
@@ -152,6 +152,7 @@ public class TestTime extends JFrame {
 					JOptionPane.INFORMATION_MESSAGE);
 			if (num == JOptionPane.YES_OPTION) {
 				timer.stop();
+				setVisible(true);
 			}
 		} else {
 			if (!timeOver) {
@@ -159,6 +160,7 @@ public class TestTime extends JFrame {
 						JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 				if (num == JOptionPane.YES_OPTION) {
 					timer.start();
+					setVisible(true);
 				}
 			} else {
 				JOptionPane.showMessageDialog(testpaper, "시간 초과 되었으니 시험 끝났습니다!");
