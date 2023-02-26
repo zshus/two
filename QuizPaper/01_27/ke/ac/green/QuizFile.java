@@ -34,7 +34,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 public class QuizFile extends JFrame {
-
+	public static int subjectNums;
 	private JLabel testName;
 	private JList<String> list;
 	private JLabel testPlaying;
@@ -63,6 +63,7 @@ public class QuizFile extends JFrame {
 	private void init() {
 		vecList = new Vector<String>();
 		getFileName(path);
+		subjectNums=vecList.size();	
 		removeHasTestItem();
 		testName = new JLabel(path.getName(), JLabel.CENTER);
 		testName.setFont(new Font("휴먼둥근헤드라인", Font.BOLD, 40));

@@ -449,8 +449,7 @@ public class GradeCheck extends JFrame {
 				if (flag) {
 					Image image = new ImageIcon("img\\first.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 					ImageIcon icon = new ImageIcon(image);
-					pnl.add(new JLabel(icon));
-					System.out.println(1111);
+					pnl.add(new JLabel(icon));					
 				}
 			}
 			if(clickedLocation>0) {

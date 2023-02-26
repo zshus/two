@@ -34,7 +34,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 public class QuizFile extends JFrame {
-
+	public static int subjectNums;
 	private JLabel testName;
 	private JList<String> list;
 	private JLabel testPlaying;
@@ -53,16 +53,18 @@ public class QuizFile extends JFrame {
 	private Vector<String> vecsubs;
 	private QuizAnswer[] quizAnswerArr;
 	private Vector<DidExam> didExamInfo;
+	private String strSeletedItemName;
 
 	public QuizFile(File path, Login login) {
 		this.path = path;
 		this.login = login;		
 		goON();
-	}
+	}	
 
 	private void init() {
 		vecList = new Vector<String>();
 		getFileName(path);
+		subjectNums=vecList.size();		
 		removeHasTestItem();
 		testName = new JLabel(path.getName(), JLabel.CENTER);
 		testName.setFont(new Font("휴먼둥근헤드라인", Font.BOLD, 40));
@@ -156,7 +158,7 @@ public class QuizFile extends JFrame {
 				scl.setVisible(false);
 				vecsubs=new Vector<>();
 				vecsubs = getSubList((String) comBox.getSelectedItem());				
-				str = (String) comBox.getSelectedItem();
+				strSeletedItemName = (String) comBox.getSelectedItem();
 				if (!comBox.getSelectedItem().equals("-시험 선택-")) {
 					subs = new JList<String>(vecsubs);					
 					scl = new JScrollPane(subs);
@@ -186,10 +188,9 @@ public class QuizFile extends JFrame {
 		setVisible(true);
 	}
 
-	private String str;
+	
 	private Vector<String> getSubList(String s) {
-		Vector<String> vecSub = new Vector<String>();
-		
+		Vector<String> vecSub = new Vector<String>();		
 		for (DidExam exam : getCurrentExam()) {		
 			if (exam.getTestDay().equals(s)) {
 				for (DidSubject sub : exam.getSubjectList()) {					
@@ -207,7 +208,7 @@ public class QuizFile extends JFrame {
 		DidSubject selesub = null;
 		int count = 0;
 		for (DidExam em : getCurrentExam()) {
-			if (em.getTestDay().equals(str)) {
+			if (em.getTestDay().equals(strSeletedItemName)) {
 				for (DidSubject sub : em.getSubjectList()) {
 					if (count == n) {
 						selesub = sub;

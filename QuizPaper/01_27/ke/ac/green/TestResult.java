@@ -31,6 +31,8 @@ import javax.swing.border.LineBorder;
 
 import QuizMaker.Quiz;
 
+
+
 public class TestResult extends JFrame {
 	public static int oldNum;
 	private Login login;
@@ -226,6 +228,10 @@ public class TestResult extends JFrame {
 
 				} else if (me.getSource() == lblSelectSubject) {
 					oldNum = didExam.getSubjectList().size();
+					if(oldNum==QuizFile.subjectNums) {
+						JOptionPane.showMessageDialog(TestResult.this, "선택할 수 있는 과목이 없습니다!");
+						return;
+					}
 					new QuizFile(p, login);
 					dispose();
 				} else if (me.getSource() == lblReTest) {
