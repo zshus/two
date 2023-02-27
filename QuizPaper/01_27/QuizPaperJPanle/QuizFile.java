@@ -34,6 +34,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 public class QuizFile extends JFrame {
+	
 	public static int subjectNums;
 	private JLabel testName;
 	private JList<String> list;
@@ -53,18 +54,17 @@ public class QuizFile extends JFrame {
 	private Vector<String> vecsubs;
 	private QuizAnswer[] quizAnswerArr;
 	private Vector<DidExam> didExamInfo;
-	private String strSeletedItemName;
 
 	public QuizFile(File path, Login login) {
 		this.path = path;
 		this.login = login;		
 		goON();
-	}	
+	}
 
 	private void init() {
 		vecList = new Vector<String>();
 		getFileName(path);
-		subjectNums=vecList.size();		
+		subjectNums=vecList.size();	
 		removeHasTestItem();
 		testName = new JLabel(path.getName(), JLabel.CENTER);
 		testName.setFont(new Font("휴먼둥근헤드라인", Font.BOLD, 40));
@@ -158,7 +158,7 @@ public class QuizFile extends JFrame {
 				scl.setVisible(false);
 				vecsubs=new Vector<>();
 				vecsubs = getSubList((String) comBox.getSelectedItem());				
-				strSeletedItemName = (String) comBox.getSelectedItem();
+				str = (String) comBox.getSelectedItem();
 				if (!comBox.getSelectedItem().equals("-시험 선택-")) {
 					subs = new JList<String>(vecsubs);					
 					scl = new JScrollPane(subs);
@@ -188,9 +188,10 @@ public class QuizFile extends JFrame {
 		setVisible(true);
 	}
 
-	
+	private String str;
 	private Vector<String> getSubList(String s) {
-		Vector<String> vecSub = new Vector<String>();		
+		Vector<String> vecSub = new Vector<String>();
+		
 		for (DidExam exam : getCurrentExam()) {		
 			if (exam.getTestDay().equals(s)) {
 				for (DidSubject sub : exam.getSubjectList()) {					
@@ -208,7 +209,7 @@ public class QuizFile extends JFrame {
 		DidSubject selesub = null;
 		int count = 0;
 		for (DidExam em : getCurrentExam()) {
-			if (em.getTestDay().equals(strSeletedItemName)) {
+			if (em.getTestDay().equals(str)) {
 				for (DidSubject sub : em.getSubjectList()) {
 					if (count == n) {
 						selesub = sub;
@@ -255,36 +256,7 @@ public class QuizFile extends JFrame {
 		
 	}
 
-	private void showWrongCheck() {
-		if (getSelectedDidSub(subs.getSelectedIndex())==null||((String)comBox.getSelectedItem()).equals("-시험 선택-")) {
-			JOptionPane.showMessageDialog(QuizFile.this, "오답 확인할 날짜을 선택하세요!");				
-		} else {
-			if( subs.isSelectionEmpty()) {  
-				JOptionPane.showMessageDialog(QuizFile.this, "아래 해당과목을 선택하세요!");			
-			}else {
-				String seletItem = subs.getSelectedValue();
-				String strName = null;
-				for (String s : vecList) {
-					String name = getName(s);
-					if (name.equals(seletItem)) {
-						strName = s;
-					}
-				}
-				int idx = subs.getSelectedIndex();
-				Vector<Integer> wrongItemsIntegers = getSelectedDidSub(idx).getWorngTestItems();
-				quizAnswerArr=getSelectedDidSub(idx).getAnswers();				
-				if (wrongItemsIntegers == null || wrongItemsIntegers.size() == 0) {
-					JOptionPane.showMessageDialog(QuizFile.this, "만점을 축합니다!\n 오답이 없습니다!");
-				} else {
-					new WrongCheck(wrongItemsIntegers, this, path, strName);
-					dispose();
-				}
-			}
-			
-			
-			
-		}
-	}
+	
 
 	private Vector<DidExam> getCurrentExam() {
 		Vector<DidExam> currentExam = new Vector<DidExam>();
@@ -361,6 +333,41 @@ public class QuizFile extends JFrame {
 	}
 	public QuizAnswer[] getQuizAnswerList() {
 		return quizAnswerArr;
+	}
+	
+	private void showWrongCheck() {
+		if(TestResult.oldNum!=0) {
+			JOptionPane.showConfirmDialog(this, "시험 진행하시고 성적 조회하세요!", "알림", JOptionPane.DEFAULT_OPTION);
+			return;
+		}
+		if (getSelectedDidSub(subs.getSelectedIndex())==null||((String)comBox.getSelectedItem()).equals("-시험 선택-")) {
+			JOptionPane.showMessageDialog(QuizFile.this, "오답 확인할 날짜을 선택하세요!");				
+		} else {
+			if( subs.isSelectionEmpty()) {  
+				JOptionPane.showMessageDialog(QuizFile.this, "아래 해당과목을 선택하세요!");			
+			}else {
+				String seletItem = subs.getSelectedValue();
+				String strName = null;
+				for (String s : vecList) {
+					String name = getName(s);
+					if (name.equals(seletItem)) {
+						strName = s;
+					}
+				}
+				int idx = subs.getSelectedIndex();
+				Vector<Integer> wrongItemsIntegers = getSelectedDidSub(idx).getWorngTestItems();
+				quizAnswerArr=getSelectedDidSub(idx).getAnswers();				
+				if (wrongItemsIntegers == null || wrongItemsIntegers.size() == 0) {
+					JOptionPane.showMessageDialog(QuizFile.this, "만점을 축합니다!\n 오답이 없습니다!");
+				} else {
+					new WrongCheck(wrongItemsIntegers, this, path, strName);
+					dispose();
+				}
+			}
+			
+			
+			
+		}
 	}
 
 }

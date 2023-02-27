@@ -42,6 +42,7 @@ import javax.swing.border.LineBorder;
 
 public class GradeCheck extends JFrame {
 
+	private int size;
 	private JLabel lblLogout; // 로그아웃
 	private JLabel lblTitle; // 상단제목
 
@@ -378,7 +379,7 @@ public class GradeCheck extends JFrame {
 	}
 
 	class MyListCellRender extends DefaultListCellRenderer {
-
+		
 		@Override
 		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {
@@ -395,11 +396,16 @@ public class GradeCheck extends JFrame {
 			pnl.add(lbltestday);
 			Vector<DidSubject> subject = exam.getSubjectList();
 			double sum = 0;
-			JPanel pnlScore = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			pnlScore.setPreferredSize(new Dimension(500, 50));
+			JPanel pnlScore = new JPanel(new FlowLayout(FlowLayout.LEFT));				
+			if(size==0||size<subject.size()*120) {				
+				size=subject.size()*120;
+				if(size<500) {
+					size=500;
+				}				
+			}			
+			pnlScore.setPreferredSize(new Dimension(size, 50));
 			pnlScore.setBorder(new EmptyBorder(12, 0, 0, 0));
 			pnlScore.setBackground(new Color(196, 222, 255));
-
 			for (int i = 0; i < subject.size(); i++) {
 				DidSubject sub = subject.get(i);
 				pnlScore.add(new JLabel(sub.getSubName() + ": "));
@@ -440,7 +446,7 @@ public class GradeCheck extends JFrame {
 				pnlScore.setBackground(Color.LIGHT_GRAY);
 				pnlSum.setBackground(Color.LIGHT_GRAY);
 				pnlClock.setBackground(Color.LIGHT_GRAY);
-			}
+			}			
 			return pnl;
 
 		}

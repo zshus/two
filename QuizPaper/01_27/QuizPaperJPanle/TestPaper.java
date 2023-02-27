@@ -428,8 +428,7 @@ public class TestPaper extends JFrame {
 	}
 
 	private void showFrame() {
-
-		setSize(900,700);
+		pack();
 		setTitle("문제풀기");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -454,13 +453,20 @@ public class TestPaper extends JFrame {
 		didSubjts.get(subjectIdx).setAnswers(quizAnswer);
 		for (int i = 0; i < lblSubject.length; i++) {
 			if (e.getSource() == lblSubject[i]) {
-				lblSubject[i].setBackground(Color.WHITE);
+				lblSubject[i].setBackground(Color.WHITE);				
+				if(i>quizAnswerList.size()){
+					for(int j=1;j<i;j++) {						
+						path = selectedList.get(j);						
+						load();
+						
+					}					
+				}				
 				path = selectedList.get(i);
 				titleString = getfileName(path);
-				titlename.setText(titleString);
+				titlename.setText(titleString);			
 				load();
-				subjectIdx = i;
-				quizAnswer = quizAnswerList.get(i);
+				subjectIdx = i;								
+				quizAnswer = quizAnswerList.get(i);				
 				resetAnswer();
 			} else {
 				lblSubject[i].setBackground(Color.LIGHT_GRAY);
@@ -790,10 +796,7 @@ public class TestPaper extends JFrame {
 		int n = JOptionPane.showConfirmDialog(this, "로그아웃 하시겠습니까?", "알람", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if (n == JOptionPane.YES_OPTION) {
-			login.savedidExamInfo(didExamName);
-			new TestResult(TestPaper.this, p, login, true);
-			login.getSave();
-			login.saveDidExam();
+			getDataSave();
 			login.setVisible(true);
 			TestResult.subNums = null;
 			login.setDidExamName(new DidExam(null, null, new Vector<DidSubject>(), null, null, null));
@@ -801,12 +804,17 @@ public class TestPaper extends JFrame {
 		}
 
 	}
+	/*
+	 * testTime = String.valueOf(Integer.parseInt(testTime) - Integer.parseInt(timer.getRestTime()));
+			didExamName.setTestTime(testTime);
+			login.savedidExamInfo(didExamName);
+			new TestResult(TestPaper.this, p, login, true);
+			login.getSave();
+			login.saveDidExam();
+	 */
 
 	private void closeWindow() {
-		login.savedidExamInfo(didExamName);
-		new TestResult(TestPaper.this, p, login, true);
-		login.getSave();
-		login.saveDidExam();
+		getDataSave();
 		System.exit(0);
 	}
 
@@ -846,6 +854,14 @@ public class TestPaper extends JFrame {
 		}else if(currentFont ==PLUS2) {
 			lblPlus2.setForeground(Color.blue);
 		}	
+	}
+	private void getDataSave() {
+		testTime = String.valueOf(Integer.parseInt(testTime) - Integer.parseInt(timer.getRestTime()));
+		didExamName.setTestTime(testTime);
+		login.savedidExamInfo(didExamName);
+		new TestResult(TestPaper.this, p, login, true);
+		login.getSave();
+		login.saveDidExam();
 	}
 
 }
