@@ -33,6 +33,7 @@ import QuizMaker.Quiz;
 
 
 
+
 public class TestResult extends JFrame {
 	public static int oldNum;
 	private Login login;
@@ -64,7 +65,8 @@ public class TestResult extends JFrame {
 
 	private File p;
 	private TestPaper testPaper;
-	private DidExam didExam;
+//	private DidExam didExam;
+	public static DidExam didExam;
 	private Vector<DidSubject> didSubjects;	
 	int ansidx=0;
 
@@ -236,6 +238,7 @@ public class TestResult extends JFrame {
 					dispose();
 				} else if (me.getSource() == lblReTest) {
 					login.savedidExamInfo(didExam);
+					didExam=null;
 					oldNum = 0;
 					subNums = null;
 					getReset();

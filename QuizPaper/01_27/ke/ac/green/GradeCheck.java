@@ -30,7 +30,6 @@ import java.util.Vector;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -43,6 +42,7 @@ import javax.swing.border.LineBorder;
 
 public class GradeCheck extends JFrame {
 
+	private int size;
 	private JLabel lblLogout; // 로그아웃
 	private JLabel lblTitle; // 상단제목
 
@@ -84,6 +84,7 @@ public class GradeCheck extends JFrame {
 		this.path = path;
 		this.login = login;
 		getTotalLoad();
+
 	}
 
 	private void init() {
@@ -109,7 +110,8 @@ public class GradeCheck extends JFrame {
 	}
 
 	private void setDisplay() {
-		JPanel pnlNorth = new JPanel(new GridLayout(3, 1)); 
+
+		JPanel pnlNorth = new JPanel(new GridLayout(3, 1)); // 상단패널
 		JPanel pnllogout = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pnllogout.setBackground(Color.white);
 		JLabel lbltemp = new JLabel();
@@ -264,7 +266,6 @@ public class GradeCheck extends JFrame {
 		lblDateDown.addMouseListener(ml);
 		lblScoreUp.addMouseListener(ml);
 		lblScoreDown.addMouseListener(ml);
-		
 	}
 
 	private void showFrame() {
@@ -281,23 +282,7 @@ public class GradeCheck extends JFrame {
 		ImageIcon icon = new ImageIcon(image);
 		return icon;
 	}
-	
-	private void clearSeleted() {		
-			infoList.addMouseListener(new MouseAdapter() {								
-				@Override
-				public void mousePressed(MouseEvent e) {
-					Rectangle r=infoList.getCellBounds(infoList.getLastVisibleIndex(),infoList.getLastVisibleIndex());				
-					int listY=r.height+r.y;
-					int mouseY=e.getY();
-					clickedLocation=mouseY-listY;
-					if(mouseY>listY) {
-						infoList.clearSelection();
-					}
-				}
 
-			});	
-	}
-	
 	private void loadTops() {
 		topList = new Vector<TopGrade>();
 		FileInputStream fis = null;
@@ -394,8 +379,7 @@ public class GradeCheck extends JFrame {
 	}
 
 	class MyListCellRender extends DefaultListCellRenderer {
-		private boolean flag = true;
-
+		
 		@Override
 		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
 				boolean cellHasFocus) {
@@ -412,23 +396,23 @@ public class GradeCheck extends JFrame {
 			pnl.add(lbltestday);
 			Vector<DidSubject> subject = exam.getSubjectList();
 			double sum = 0;
-			JPanel pnlScore = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			pnlScore.setPreferredSize(new Dimension(500, 50));
+			JPanel pnlScore = new JPanel(new FlowLayout(FlowLayout.LEFT));				
+			if(size==0||size<subject.size()*120) {				
+				size=subject.size()*120;
+				if(size<500) {
+					size=500;
+				}				
+			}			
+			pnlScore.setPreferredSize(new Dimension(size, 50));
 			pnlScore.setBorder(new EmptyBorder(12, 0, 0, 0));
 			pnlScore.setBackground(new Color(196, 222, 255));
-
 			for (int i = 0; i < subject.size(); i++) {
 				DidSubject sub = subject.get(i);
 				pnlScore.add(new JLabel(sub.getSubName() + ": "));
 				pnlScore.add(new JLabel(sub.getGotScore() + "      "));
 				sum += Double.valueOf(sub.getGotScore());
-				if (subject.size() == didExam_best.getSubjectList().size()) {				
-					if (!(sub.getSubName().equals(didExam_best.getSubjectList().get(i).getSubName()))) {
-						flag = false;
-					}
-					
-				}
-			}			
+			}
+
 			pnl.add(pnlScore);
 			JPanel pnlSum = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			pnlSum.setPreferredSize(new Dimension(100, 50));
@@ -443,22 +427,18 @@ public class GradeCheck extends JFrame {
 			pnlClock.setBackground(new Color(196, 222, 255));
 			pnlClock.add(new JLabel(GradeCheck.this.getIcon("img\\clock.png", 30, 30)));
 			pnlClock.add(new JLabel("   " + exam.getTestTime()));
-			pnl.add(pnlClock);			
+			pnl.add(pnlClock);
 			if (exam.getTestDay().equals(didExam_best.getTestDay()) && sum == getAllScore_best()
 					&& exam.getTestTime().equals(didExam_best.getTestTime())) {
-				if (flag) {
-					Image image = new ImageIcon("img\\first.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-					ImageIcon icon = new ImageIcon(image);
-					pnl.add(new JLabel(icon));					
-				}
-			}
+				pnl.add(new JLabel(GradeCheck.this.getIcon("img\\first.png", 50, 50)));
+			}			
 			if(clickedLocation>0) {
 				if(!infoList.isSelectionEmpty()) {
 					infoList.clearSelection();
 				}
 				isSelected=false;
-			}				
-			if (isSelected) {				
+			}		
+			if (isSelected) {
 				pnl.setBorder(new LineBorder(Color.YELLOW, 2));
 			}
 			if (sum < 60) {
@@ -466,7 +446,7 @@ public class GradeCheck extends JFrame {
 				pnlScore.setBackground(Color.LIGHT_GRAY);
 				pnlSum.setBackground(Color.LIGHT_GRAY);
 				pnlClock.setBackground(Color.LIGHT_GRAY);
-			}
+			}			
 			return pnl;
 
 		}
@@ -621,5 +601,21 @@ public class GradeCheck extends JFrame {
 			System.exit(0);
 		}
 	}
+	
+	private void clearSeleted() {		
+		infoList.addMouseListener(new MouseAdapter() {								
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Rectangle r=infoList.getCellBounds(infoList.getLastVisibleIndex(),infoList.getLastVisibleIndex());				
+				int listY=r.height+r.y;
+				int mouseY=e.getY();
+				clickedLocation=mouseY-listY;
+				if(mouseY>listY) {
+					infoList.clearSelection();
+				}
+			}
+
+		});	
+}
 
 }

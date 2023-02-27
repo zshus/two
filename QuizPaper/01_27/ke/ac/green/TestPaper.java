@@ -413,18 +413,45 @@ public class TestPaper extends JFrame {
 		resetOption(0);
 	}
 
+//	private void addlblSubjectAction(MouseEvent e) {
+//		quizAnswerList.set(subjectIdx, quizAnswer);
+//		didSubjts.get(subjectIdx).setAnswers(quizAnswer);
+//		for (int i = 0; i < lblSubject.length; i++) {
+//			if (e.getSource() == lblSubject[i]) {
+//				lblSubject[i].setBackground(Color.WHITE);
+//				path = selectedList.get(i);
+//				titleString = getfileName(path);
+//				titlename.setText(titleString);
+//				load();
+//				subjectIdx = i;
+//				quizAnswer = quizAnswerList.get(i);
+//				resetAnswer();
+//			} else {
+//				lblSubject[i].setBackground(Color.LIGHT_GRAY);
+//			}
+//		}
+//	}
+	
+	
 	private void addlblSubjectAction(MouseEvent e) {
 		quizAnswerList.set(subjectIdx, quizAnswer);
 		didSubjts.get(subjectIdx).setAnswers(quizAnswer);
 		for (int i = 0; i < lblSubject.length; i++) {
 			if (e.getSource() == lblSubject[i]) {
-				lblSubject[i].setBackground(Color.WHITE);
+				lblSubject[i].setBackground(Color.WHITE);				
+				if(i>quizAnswerList.size()){
+					for(int j=1;j<i;j++) {						
+						path = selectedList.get(j);						
+						load();
+						
+					}					
+				}				
 				path = selectedList.get(i);
 				titleString = getfileName(path);
-				titlename.setText(titleString);
+				titlename.setText(titleString);			
 				load();
-				subjectIdx = i;
-				quizAnswer = quizAnswerList.get(i);
+				subjectIdx = i;								
+				quizAnswer = quizAnswerList.get(i);				
 				resetAnswer();
 			} else {
 				lblSubject[i].setBackground(Color.LIGHT_GRAY);

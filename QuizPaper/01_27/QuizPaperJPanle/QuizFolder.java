@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+
 public class QuizFolder extends JFrame {
 	private JLabel lblName;
 	private JLabel lblQuiz;
@@ -118,6 +119,9 @@ public class QuizFolder extends JFrame {
 		int choice = JOptionPane.showConfirmDialog(this, "시험연습장 프로그램을 종료 하시겠습니까?", "종료", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if (choice == JOptionPane.OK_OPTION) {
+			if(TestResult.didExam!=null) {
+				login.savedidExamInfo(TestResult.didExam);
+			}
 			login.getSave();
 			login.saveDidExam();
 			System.exit(0);

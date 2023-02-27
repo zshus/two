@@ -62,7 +62,8 @@ public class TestResult extends JFrame {
 
 	private File p;
 	private TestPaper testPaper;
-	private DidExam didExam;
+//	private DidExam didExam;
+	public static DidExam didExam;
 	private Vector<DidSubject> didSubjects;	
 	int ansidx=0;
 
@@ -216,10 +217,10 @@ public class TestResult extends JFrame {
 					int choice = JOptionPane.showConfirmDialog(TestResult.this, "로그아웃 하시겠습니까?", "알람",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					if (choice == JOptionPane.OK_OPTION) {
-						getSaveDataAllAndLogout();
-						login.setVisible(true);
+						getSaveDataAllAndLogout();						
 						subNums = null;
 						getReset();
+						login.setVisible(true);
 						dispose();
 					}
 
@@ -233,6 +234,7 @@ public class TestResult extends JFrame {
 					dispose();
 				} else if (me.getSource() == lblReTest) {
 					login.savedidExamInfo(didExam);
+					didExam=null;
 					oldNum = 0;
 					subNums = null;
 					getReset();
